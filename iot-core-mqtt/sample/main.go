@@ -23,9 +23,9 @@ func init() {
 }
 
 func main() {
+	Publish("Hello World")
 	resp := Subsribe()
 	fmt.Println(resp)
-	Publish("Hello World")
 }
 
 func getMQTTClient() MQTT.Client {
