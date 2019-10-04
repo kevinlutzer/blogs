@@ -6,7 +6,7 @@ The following sections are blogs that I have written grouped together by intende
 [RxJS Test Scheduler - A Jest and Typescipt Based Example](./rxjs-test-scheduler/rxjs_test_scheduler_with_jest.md)
 [Iot Core With An MQTT Application - Diving into the basics of IOT Core and Communication to the Managed Infrustructure with MQTT](./iot-core-mqtt/blog.md)
 
-## Vendasta Specific
+## Vendasta General
 
 [Angular CLI - An Introduction](./angular-cli/angular-cli.md)[RxJS Test Scheduler - A Jest and Typescipt Based Example](./rxjs-test-scheduler/rxjs_test_scheduler_with_jest.md)
 [Lazy Loading Modules - How to Improve your Application Load Time With Built In Angular Tools](./lazy-loading-modules/lazy-loaded-modules.md)
