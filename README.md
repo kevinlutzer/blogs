@@ -4,7 +4,7 @@ The following sections are blogs that I have written grouped together by intende
 ## General
 
 [RxJS Test Scheduler - A Jest and Typescipt Based Example](./rxjs-test-scheduler/rxjs_test_scheduler_with_jest.md)<br>
-[Iot Core With An MQTT Application - Diving into the basics of IOT Core and Communication to the Managed Infrustructure with MQTT](./iot-core-mqtt/blog.md)<br>
+[Iot Core With An MQTT Application (WIP) - Diving into the basics of IOT Core and Communication to the Managed Infrustructure with MQTT](./iot-core-mqtt/blog.md)<br>
 
 ## Vendasta General
 
