@@ -2,79 +2,61 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
-
 	MQTT "github.com/eclipse/paho.mqtt.golang"
+	"time"
 )
-
-var (
-	logger *log.Logger
-)
-
-const (
-	brokerURI  = "test.mosquitto.org"
-	brokerPort = "1883"
-	topic      = "mqtt/test/klutzer"
-)
-
-func init() {
-	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime)
-}
 
 func main() {
-	Publish("Hello World")
-	resp := Subsribe()
-	fmt.Println(resp)
+
+	topic := "mqtt/test/iot-mqtt-blog"
+
+	c, _ := newClient()
+	
+	c.Subsribe(topic, func(_ MQTT.Client, m MQTT.Message) {
+		fmt.Printf("Message: %s \n", m.Payload())
+		fmt.Printf("Topic: %s \n", m.Topic())
+	})
+	
+	c.Publish("Hello World", topic)
+	
+	time.Sleep(time.Second * 6)
 }
 
-func getMQTTClient() MQTT.Client {
+type client struct {
+	mqttClient MQTT.Client
+}
 
-	clientID := "F`/hty$3{+JQ%,j9"
-	broker := fmt.Sprintf("tcp://%v:%v", brokerURI, brokerPort)
-
+func newClient() (*client, error) {
 	opts := MQTT.NewClientOptions()
-	opts.AddBroker(broker)
-	opts.SetClientID(clientID)
+	opts.AddBroker("tcp://test.mosquitto.org:1883")
+	opts.SetClientID("F`/hty$3{+JQ%,j9")
 
-	return MQTT.NewClient(opts)
+	mqttClient := MQTT.NewClient(opts)
+
+	if token := mqttClient.Connect(); token.Wait() && token.Error() != nil {
+		return nil, token.Error()
+	}
+
+	return &client{
+		mqttClient,
+	}, nil
 }
 
-func Publish(msg string) {
-	client := getMQTTClient()
-	token := client.Publish(topic, 0, false, msg)
-	token.WaitTimeout(100)
-	err := token.Error()
-	if err != nil {
-		log.Fatalf("failed to publish the payload: %v\n", err.Error())
-	}
-	client.Disconnect(50)
+func (c *client) Cleanup(topics ...string) {
+	c.mqttClient.Disconnect(250)
 }
 
-func Subsribe() string {
-	choke := make(chan [2]string)
-	client := getMQTTClient()
-
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		log.Fatalf("Failed to subscribe with error %s", token.Error().Error())
+// Publish will sent Call this when we want to
+func (c *client) Publish(msg, topic string) error {
+	if token := c.mqttClient.Publish(topic, 1, false, msg); token.Wait() && token.Error() != nil {
+		return token.Error()
 	}
+	return nil
+}
 
-	token := client.Subscribe(
-		topic,
-		0,
-		func(client MQTT.Client, msg MQTT.Message) {
-			choke <- [2]string{msg.Topic(), string(msg.Payload())}
-		},
-	)
-
-	token.WaitTimeout(100)
-	err := token.Error()
-	if err != nil {
-		logger.Fatalln("failed to publish the payload")
+func (c *client) Subsribe(topic string, f MQTT.MessageHandler) error {
+	if token := c.mqttClient.Subscribe(topic, 0, f); token.Wait() && token.Error() != nil {
+		return token.Error()
 	}
-
-	incoming := <-choke
-
-	client.Disconnect(250)
-	return incoming[1]
+	return nil
 }
