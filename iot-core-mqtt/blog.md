@@ -16,7 +16,7 @@ So whats happening here? Client A tells the server that it is publishing a messa
 
 What if Client B looses internet access before it can recieve and process the message? How can we gaurentee that Client B recieves the message? That is where quality of service (QOS) comes in!
 
-### Quality of Service (QOS)
+# Quality of Service (QOS)
 
 Clients can define a QOS for both publish and subcribe actions. This setting describes the level of effort the broker will use to ensure message delivery. Here are the different QOS defintions from the [manual page](https://mosquitto.org/man/mqtt-7.html) for MQTT.
 
@@ -26,7 +26,7 @@ Clients can define a QOS for both publish and subcribe actions. This setting des
 
 As you increase in QOS, the reliability and rhobustness of the message transmissions increases, but more process power and internet bandwidth is required. Note that even though both the publisher and subscriber can set their own QOS, the lower number is the one that is honoured by the server. So if Client A sent the message with a QOS of 2, and Client B is subscribing with 0, 0 will be used.
 
-### Message Retention
+## Message Retention
 
 Lets go back to our previous example. What if we add Client C to our application? What if we want it to recieve the same message that Client A originally sent. That is where message rention comes in! When Client A publishes the message, it cam configure it to be retained by the server. Now when Client C subscribes to the topic `/mqtt-explanation-klutzer`, the server will send the message to it.
 
@@ -96,6 +96,7 @@ func (c *client) Subsribe(topic string, f MQTT.MessageHandler) error {
 }
 ```
 
+
 Note that most of the methods that require some sort of interaction with the server like `Subsribe`, `Unsubscribe`, `Publish` and `Connect` return a token. This token has a `Wait` method which blocks until the operation has been completed. The `Error` method on the token will hold an error caused during the operations' execution.
 
 
@@ -132,7 +133,7 @@ func main() {
 
 ```
 
-I recommend making this workspace a go module. To do this, and install the depencies by running the following commands in your terminal.
+I recommend making this workspace a go module. To do this, and install the depencies by running the following commands in your terminal:
 
 ``` bash
 	go mod init sample
@@ -140,7 +141,7 @@ I recommend making this workspace a go module. To do this, and install the depen
 	go mod vendor
 ```
 
-You should now be able to execute this code by running `go run ./...` from the base directory, and see the following result
+You should now be able to execute this code by running `go run ./...` from the base directory, and see the following result:
 
 ```
 Message: Hello World 
