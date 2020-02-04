@@ -6,7 +6,7 @@ const (
 	DeviceID   = "test-device"
 	Host       = "mqtt.googleapis.com"
 	Port       = "8883"
-	ProjectID  = "test-project-klutzer"
+	ProjectID  = "iot-core-sample-klutzer"
 	RegistryID = "devices"
 	Region     = "us-central1"
 	Topic      = "/devices/test-device/config"
