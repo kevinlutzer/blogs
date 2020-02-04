@@ -10,14 +10,15 @@ import (
 	"google.golang.org/genproto/googleapis/cloud/iot/v1"
 )
 
-// UpdateDeviceConfig updates the device config for a iot device
-func UpdateDeviceConfig(w http.ResponseWriter, r *http.Request) {
+// UpdateIOTDeviceConfig updates the device config for a iot device
+func UpdateIOTDeviceConfig(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := fmt.Sprintf("Error When reading body: %s", err.Error())
 		fmt.Println(msg)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		return
 	}
 
 	ctx := context.Background()
@@ -31,7 +32,7 @@ func UpdateDeviceConfig(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if _, err := client.ModifyCloudToDeviceConfig(ctx, &iot.ModifyCloudToDeviceConfigRequest{
-		Name:       "projects/iot-klutzer/locations/us-central1/registries/devices-klutzer/devices/room-environment-monitor-personal",
+		Name:       "projects/iot-klutzer/locations/us-central1/registries/devices-klutzer/devices/test-device",
 		BinaryData: b,
 	}); err != nil {
 		msg := fmt.Sprintf("Error When Modifying Device: %s", err.Error())
