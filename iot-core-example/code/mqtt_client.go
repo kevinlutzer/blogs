@@ -14,7 +14,7 @@ func getTokenString(rsaPrivate string) (string, error) {
 	token := jwt.New(jwt.SigningMethodRS256)
 
 	token.Claims = jwt.StandardClaims{
-		Audience:  ProjectID,
+		Audience:  projectID,
 		IssuedAt:  time.Now().Unix(),
 		ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
 	}
@@ -49,10 +49,10 @@ func getTLSConfig(rootsCert string) *tls.Config {
 func newClient(certs *sslCerts) (*client, error) {
 
 	clientID := fmt.Sprintf("projects/%v/locations/%v/registries/%v/devices/%v",
-		ProjectID,
-		Region,
-		RegistryID,
-		DeviceID,
+		projectID,
+		region,
+		registryID,
+		deviceID,
 	)
 
 	jwtString, err := getTokenString(certs.RSAPrivate)
@@ -63,14 +63,13 @@ func newClient(certs *sslCerts) (*client, error) {
 	tlsConfig := getTLSConfig(certs.Roots)
 
 	opts := MQTT.NewClientOptions()
-	opts.AddBroker(fmt.Sprintf("ssl://%v:%v", Host, Port))
+	opts.AddBroker(fmt.Sprintf("ssl://%v:%v", host, port))
 	opts.SetClientID(clientID).SetTLSConfig(tlsConfig)
 	opts.SetUsername("unused")
 	opts.SetPassword(jwtString)
 
 	mqttClient := MQTT.NewClient(opts)
 
-	// We have to create the connection to the broker manually and verify that there is no error.
 	if token := mqttClient.Connect(); token.Wait() && token.Error() != nil {
 		return nil, token.Error()
 	}
@@ -84,9 +83,15 @@ type client struct {
 	mqttClient MQTT.Client
 }
 
-// Subscribe creates a subscription for the passed topic. The callBack function is used to process any messages that the client recieves on that topic. The subscription created will have a QOS of 1.
-func (c *client) Subsribe(f MQTT.MessageHandler) error {
-	if token := c.mqttClient.Subscribe(Topic, 0, f); token.Wait() && token.Error() != nil {
+func (c *client) Subsribe(topic string, f MQTT.MessageHandler) error {
+	if token := c.mqttClient.Subscribe(topic, 0, f); token.Wait() && token.Error() != nil {
+		return token.Error()
+	}
+	return nil
+}
+
+func (c *client) Publish(topic, msg string) error {
+	if token := c.mqttClient.Publish(topic, 2, false, msg); token.Wait() && token.Error() != nil {
 		return token.Error()
 	}
 	return nil

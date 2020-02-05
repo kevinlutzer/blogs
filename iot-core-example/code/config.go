@@ -1,17 +1,28 @@
 package main
 
-import "io/ioutil"
+import (
+	"io/ioutil"
+	"os"
+)
 
 const (
-	DeviceID   = "test-device"
-	Host       = "mqtt.googleapis.com"
-	Port       = "8883"
-	ProjectID  = "iot-core-sample-klutzer"
-	RegistryID = "devices"
-	Region     = "us-central1"
-	Topic      = "/devices/test-device/config"
-	Path       = "certs/"
+	deviceID       = "test-device"
+	host           = "mqtt.googleapis.com"
+	port           = "8883"
+	registryID     = "devices"
+	region         = "us-central1"
+	configTopic    = "/devices/test-device/config"
+	telemetryTopic = "/devices/test-device/events"
+	certPath       = "certs/"
 )
+
+var projectID string
+
+func init() {
+	if projectID = os.Getenv("PROJECT_ID"); projectID == "" {
+		panic("PROJECT_ID environment variable is required.\n Please start this application by running `PROJECT_ID=<INSERT_PROJECT_ID>`")
+	}
+}
 
 type sslCerts struct {
 	RSAPrivate string
@@ -19,12 +30,12 @@ type sslCerts struct {
 }
 
 func getSSLCerts() (*sslCerts, error) {
-	rs, err := ioutil.ReadFile(Path + "roots.pem")
+	rs, err := ioutil.ReadFile(certPath + "roots.pem")
 	if err != nil {
 		return nil, err
 	}
 
-	rscp, err := ioutil.ReadFile(Path + "rsa_private.pem")
+	rscp, err := ioutil.ReadFile(certPath + "rsa_private.pem")
 	if err != nil {
 		return nil, err
 	}
