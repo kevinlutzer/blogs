@@ -90,8 +90,8 @@ func (c *client) Subsribe(topic string, f MQTT.MessageHandler) error {
 	return nil
 }
 
-func (c *client) Publish(topic, msg string) error {
-	if token := c.mqttClient.Publish(topic, 2, false, msg); token.Wait() && token.Error() != nil {
+func (c *client) Publish(topic string, msg interface{}) error {
+	if token := c.mqttClient.Publish(topic, 1, false, msg); token.Wait() && token.Error() != nil {
 		return token.Error()
 	}
 	return nil

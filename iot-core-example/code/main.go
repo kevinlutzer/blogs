@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"time"
@@ -31,7 +32,15 @@ func main() {
 	go func() {
 		for true {
 			fmt.Println("Publishing message")
-			if err := c.Publish(telemetryTopic, "Foo Bar"); err != nil {
+			payload := struct {
+				Value     string    `json:"value"`
+				Timestamp time.Time `json:"timestamp"`
+			}{
+				Value:     "Foo Bar",
+				Timestamp: time.Now().UTC(),
+			}
+			b, _ := json.Marshal(payload)
+			if err := c.Publish(telemetryTopic, b); err != nil {
 				errors <- err
 			}
 			time.Sleep(time.Second * 5)
