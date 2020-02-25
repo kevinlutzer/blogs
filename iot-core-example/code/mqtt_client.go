@@ -6,16 +6,14 @@ import (
 	"fmt"
 	"time"
 
-	"io/ioutil"
-	"os"
 	"github.com/dgrijalva/jwt-go"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
+	"io/ioutil"
+	"os"
 )
 
 const (
 	deviceID    = "test-device"
-	host        = "mqtt.googleapis.com"
-	port        = "8883"
 	registryID  = "devices"
 	region      = "us-central1"
 	configTopic = "/devices/test-device/config"
@@ -40,7 +38,6 @@ func getSSLCerts() (rootsCert []byte, clientKey []byte, err error) {
 	if err != nil {
 		return
 	}
-
 	return
 }
 
@@ -102,7 +99,7 @@ func newClient() (*client, error) {
 	tlsConfig := getTLSConfig(string(roots))
 
 	opts := MQTT.NewClientOptions()
-	opts.AddBroker(fmt.Sprintf("ssl://%v:%v", host, port))
+	opts.AddBroker("ssl://mqtt.googleapis.com:8883")
 	opts.SetClientID(clientID).SetTLSConfig(tlsConfig)
 	opts.SetUsername("unused")
 	opts.SetPassword(jwtString)
@@ -124,13 +121,6 @@ type client struct {
 
 func (c *client) Subsribe(topic string, f MQTT.MessageHandler) error {
 	if token := c.mqttClient.Subscribe(topic, 0, f); token.Wait() && token.Error() != nil {
-		return token.Error()
-	}
-	return nil
-}
-
-func (c *client) Publish(topic string, msg interface{}) error {
-	if token := c.mqttClient.Publish(topic, 1, false, msg); token.Wait() && token.Error() != nil {
 		return token.Error()
 	}
 	return nil
