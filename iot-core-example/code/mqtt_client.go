@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"io/ioutil"
 	"os"
+	"github.com/dgrijalva/jwt-go"
+	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
 const (
