@@ -1,19 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+
 	MQTT "github.com/eclipse/paho.mqtt.golang"
-	"time"
 )
 
 func main() {
-	certs, err := getSSLCerts()
-	if err != nil {
-		panic(err)
-	}
-
-	c, err := newClient(certs)
+	c, err := newClient()
 	if err != nil {
 		panic(err)
 	}
@@ -28,28 +22,7 @@ func main() {
 		panic(err)
 	}
 
-	errors := make(chan error)
-	go func() {
-		for true {
-			fmt.Println("Publishing message")
-			payload := struct {
-				Value     string    `json:"value"`
-				Timestamp time.Time `json:"timestamp"`
-			}{
-				Value:     "Foo Bar",
-				Timestamp: time.Now().UTC(),
-			}
-			b, _ := json.Marshal(payload)
-			if err := c.Publish(telemetryTopic, b); err != nil {
-				errors <- err
-			}
-			time.Sleep(time.Second * 5)
-		}
-	}()
-
-	if err := <-errors; err != nil {
-		fmt.Errorf("Error with publishing message: %s", err.Error())
-	}
-
-	time.Sleep(time.Minute * 100)
+	// Block indefinitely
+	b := make(chan struct{})
+	<-b
 }

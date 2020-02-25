@@ -8,7 +8,41 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
+	"io/ioutil"
+	"os"
 )
+
+const (
+	deviceID    = "test-device"
+	host        = "mqtt.googleapis.com"
+	port        = "8883"
+	registryID  = "devices"
+	region      = "us-central1"
+	configTopic = "/devices/test-device/config"
+	certPath    = "certs/"
+)
+
+var projectID string
+
+func init() {
+	if projectID = os.Getenv("PROJECT_ID"); projectID == "" {
+		panic("PROJECT_ID environment variable is required.\n Please start this application by running `PROJECT_ID=<INSERT_PROJECT_ID>`")
+	}
+}
+
+func getSSLCerts() (rootsCert []byte, clientKey []byte, err error) {
+	rootsCert, err = ioutil.ReadFile(certPath + "roots.pem")
+	if err != nil {
+		return
+	}
+
+	clientKey, err = ioutil.ReadFile(certPath + "rsa_private.pem")
+	if err != nil {
+		return
+	}
+
+	return
+}
 
 func getTokenString(rsaPrivate string) (string, error) {
 	token := jwt.New(jwt.SigningMethodRS256)
@@ -46,7 +80,7 @@ func getTLSConfig(rootsCert string) *tls.Config {
 	}
 }
 
-func newClient(certs *sslCerts) (*client, error) {
+func newClient() (*client, error) {
 
 	clientID := fmt.Sprintf("projects/%v/locations/%v/registries/%v/devices/%v",
 		projectID,
@@ -55,12 +89,17 @@ func newClient(certs *sslCerts) (*client, error) {
 		deviceID,
 	)
 
-	jwtString, err := getTokenString(certs.RSAPrivate)
+	roots, clientKey, err := getSSLCerts()
 	if err != nil {
 		return nil, err
 	}
 
-	tlsConfig := getTLSConfig(certs.Roots)
+	jwtString, err := getTokenString(string(clientKey))
+	if err != nil {
+		return nil, err
+	}
+
+	tlsConfig := getTLSConfig(string(roots))
 
 	opts := MQTT.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("ssl://%v:%v", host, port))
