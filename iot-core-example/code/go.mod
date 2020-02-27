@@ -1,4 +1,4 @@
-module iot-client
+module iot-device
 
 go 1.12
 

@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
+	"io/ioutil"
+
 	"github.com/dgrijalva/jwt-go"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
-	"io/ioutil"
-	"os"
 )
 
 const (
@@ -22,11 +22,11 @@ const (
 
 var projectID string
 
-func init() {
-	if projectID = os.Getenv("PROJECT_ID"); projectID == "" {
-		panic("PROJECT_ID environment variable is required.\n Please start this application by running `PROJECT_ID=<INSERT_PROJECT_ID>`")
-	}
-}
+// func init() {
+// 	if projectID = os.Getenv("PROJECT_ID"); projectID == "" {
+// 		panic("PROJECT_ID environment variable is required.\n Please start this application by running `PROJECT_ID=<INSERT_PROJECT_ID>`")
+// 	}
+// }
 
 func getSSLCerts() (rootsCert []byte, clientKey []byte, err error) {
 	rootsCert, err = ioutil.ReadFile(certPath + "roots.pem")
