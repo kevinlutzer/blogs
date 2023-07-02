@@ -1,7 +1,10 @@
 # Overview
 
-- Why would we want to remotely program an arduino device
-- We want to do the compilation on your main computer for performance reasons. 
+There are a lot of reasons as too why you would want to remotely program your Arduino boards! For me specifically my test bench with my power supplies, oscillscope, and spectrum analyzer is in a seperate part of my work room from where my computer is. You could also just want the electrical isolation from your computer, say if you are working on embedded project where a 120 VAC signal is being manipulated -- One small mistake and you expose your computer's USB bus to this dangerous signal!
+
+I am going to go over how to program an arduino using a raspberry pi without needing to remote desktop into it! This will allow us to run a few simple bash commands for each time we want to compile and upload code to our arduino. 
+
+
 - Mention that this setup is completely headless! No remote desktop needed. 
 - Talk about how we can automate all of this with vscode tasks.
 
