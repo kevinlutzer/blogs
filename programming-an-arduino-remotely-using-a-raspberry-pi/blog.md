@@ -49,7 +49,7 @@ If you want to see all board files that are avaliable, you can ommit the `<keywo
 
 ![Arduino Cli Search Output](./assets/arduino_cli_search.png "Arduino Cli Search Output")
 
-The id field is the value we need when install the board files. I’m using an older Arduino Nano that uses an AVR chip, so I’ll run the following:
+The id field is the value we need when installing the board files. I’m using an older Arduino Nano that uses an AVR chip, so I’ll run the following:
 
 `arduino-cli core install arduino:avr`
 
@@ -132,7 +132,7 @@ Next, we’ll upload the code from the Raspberry Pi using the Arduino CLI `uploa
 
 `ssh pi@rasperrypi.local '/home/pi/local/bin/arduino-cli upload -b arduino:avr:nano -p /dev/ttyUSB0 --input-dir=/home/pi/blink'`.
 
-**Note:** My Arduino Nano is mounted to `/dev/ttyUSB0`. You can find what port your Arduino will be programmed from by running `ssh ssh pi@rasperrypi.local 'ls /dev/` and comparing the output from when the device is plugged in to when it is not. There will be a path that is is missing the second time you run this command. This path will be what you have to specify in the upload command. If you are using an external programmer like the [https://reprap.org/wiki/USBasp](USBasp), the Arduino CLI should find what port the device is connected to. In this case you can replace the argument `-p /dev/ttyUSB0` with `-P uspasp` in the upload command. 
+**Note:** My Arduino Nano is mounted to `/dev/ttyUSB0`. You can find what port your Arduino will be programmed from by running `ssh ssh pi@rasperrypi.local 'ls /dev/'` and comparing the output from when the device is plugged in to when it is not. There will be a path that is is missing the second time you run this command. This path will be what you have to specify in the upload command as the programmer's path. If you are using an external programmer like the [https://reprap.org/wiki/USBasp](USBasp), the Arduino CLI should find what port the device is connected to if you just specify the name of the programmer. In this case you can replace the argument `-p /dev/ttyUSB0` with `-P uspasp` in the upload command. 
 
 If you want to run only one command instead of three each time, you can concatenate the command with the `&&` bash operator:
 
