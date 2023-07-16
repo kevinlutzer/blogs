@@ -3,7 +3,7 @@ What’s the advantage of programming our Arduino device remotely? For me, it’
 
 When working with signals that can be dangerous to our computer’s USB bus, it’s essential to have some form of isolation layer. For example, if we’re working on an embedded project where we’re manipulating a 120 VAC signal, one small wiring mistake could expose our computer to this harmful signal!
 
-In this article, we’ll explore how to program an Arduino using a Raspberry Pi without needing to remote desktop into it, allowing us to run a few simple commands on a Linux or Mac command-line interface (CLI) each time we want to compile and upload code to our Arduino device.
+In this article, we’ll explore how to program an Arduino with a blink sketch using a Raspberry Pi without needing to remote desktop into it, allowing us to run a few simple commands on a Linux or Mac command-line interface (CLI) each time we want to compile and upload code to our Arduino device.
 
 Let’s get started!
 ## Overview
@@ -132,9 +132,7 @@ Next, we’ll upload the code from the Raspberry Pi using the Arduino CLI `uploa
 
 `ssh pi@rasperrypi.local '/home/pi/local/bin/arduino-cli upload -b arduino:avr:nano -p /dev/ttyUSB0 --input-dir=/home/pi/blink'`.
 
-**Note:** My Arduino Nano is mounted to `/dev/ttyUSB0`. You’ll have to replace this with the port your programmer is mounted to. 
-
-The Arduino CLI should detect what programmer is attracted to that port and run the appropriate upload commands. But if this command isn’t working, add a `-P` option to the command with the name of the programmer you’re using.
+**Note:** My Arduino Nano is mounted to `/dev/ttyUSB0`. You can find what port your Arduino will be programmed from by running `ssh ssh pi@rasperrypi.local 'ls /dev/` and comparing the output from when the device is plugged in to when it is not. There will be a path that is is missing the second time you run this command. This path will be what you have to specify in the upload command. If you are using an external programmer like the [https://reprap.org/wiki/USBasp](USBasp), the Arduino CLI should find what port the device is connected to. In this case you can replace the argument `-p /dev/ttyUSB0` with `-P uspasp` in the upload command. 
 
 If you want to run only one command instead of three each time, you can concatenate the command with the `&&` bash operator:
 
