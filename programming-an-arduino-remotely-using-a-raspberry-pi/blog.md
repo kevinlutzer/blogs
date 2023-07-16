@@ -12,6 +12,7 @@ For this tutorial, we’ll use the [https://arduino.github.io/arduino-cli/0.33/]
 Here’s an overview of our workflow: 
 
 ![Uploading Paradigm text](./assets/programming-paradigm.jpg "Uploading Paradigm")
+
 ## Prerequisites
 To follow along, you’ll need the following:
 
@@ -44,9 +45,18 @@ Now, you need to install the board files for the specific Arduino Device you’r
 
 `arduino-cli core search <keywords>`
 
-I’m using an Arduino Nano, so I’ll run the following:
+If you want to see all board files that are avaliable, you can ommit the `<keywords>` argument to the search command. This will produce a list that looks like: 
+
+![Arduino Cli Search Output](./assets/arduino_cli_search.png "Arduino Cli Search Output")
+
+The id field is the value we need when install the board files. I’m using an older Arduino Nano that uses an AVR chip, so I’ll run the following:
 
 `arduino-cli core install arduino:avr`
+
+However if you are using one of newer R4 boards like this [https://store-usa.arduino.cc/products/uno-r4-wifi](UNO R4 WiFi) you would have to run the following:
+
+`arduino-cli core install arduino:renesas_uno`
+
 ## Setting Up the Raspberry Pi
 Start up the Raspberry Pi Imager on your main computer. Under the **Raspberry Pi OS (Other)** menu, set the operating system to be **Raspberry Pi OS Lite (32-bit)** and select the appropriate storage device using the **Choose Storage** menu.
 
