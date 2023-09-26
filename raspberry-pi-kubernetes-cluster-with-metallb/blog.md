@@ -4,6 +4,8 @@ Understanding Kubernetes is crucial to having a successful career as a backend o
 
 In today's digital landscape, owning and managing your software infrastructure has become an increasingly appealing option for individuals and organizations alike. The desire for control, privacy, and customization has driven a surge in the popularity of self-hosting solutions. With technologies like K3s and MetalLB at your disposal, creating and maintaining your self-hosted applications and services has never been easier.
 
+## K3s, Metallb and Kubernetes
+
 Kubernetes allows you to run multiple containerized services with a shared pool of resources. In Kubernetes, there are two types of nodes; A working node and the primary node. The primary node runs the Kubernetes server instance. This server manages all of the running Kubernetes Services, Pods, Deployments, and other objects. It will start new container deployments on worker nodes when needed, coordinate with a DNS server to create records for service-to-service discovery, manage the networking between the different nodes, and many other tasks.
 
 K3s like Google Kubernetes Engine, or Azure Kubernetes Service implement the Kubernetes APIs. However, K3s is optimized to run on an ARM CPU. This makes K3s perfect for running on low-cost ARMv8-based Raspberry Pi 4s. In our K3s Raspberry Pi base cluster, each Raspberry Pi can be seen as an individual node. Our primary node will run the K3s server as well as the K3s agent program to maximize its resource usage. All other nodes will just run the K3s agent.
