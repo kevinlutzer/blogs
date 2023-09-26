@@ -1,8 +1,8 @@
-# Raspberry Pi Kubernetes Cluster with K3S and Metallb
+# Raspberry Pi Kubernetes Cluster with K3s and Metallb
 
 Understanding Kubernetes is crucial to having a successful career as a backend or full-stack developer. Many companies like Google, Spotify, Amazon, and Reddit use Kubernetes to host and manage their services. However, it can be expensive to have a persistent Kubernetes cluster where you can run long-term experiments to learn. For example, a two node cluster with load balancing on Linode costs around $40 USD a month. If you have an old computer or Raspberry Pi kicking around you can make a bare metal cluster using K3s. In this tutorial, I go over how to make a K3s cluster on a few Raspberry Pis and show how to expose services on your network using Metallb. I then show how to run a simple nginx server and service to demonstrate the cluster is working.
 
-In today's digital landscape, owning and managing your software infrastructure has become an increasingly appealing option for individuals and organizations alike. The desire for control, privacy, and customization has driven a surge in the popularity of self-hosting solutions. With technologies like K3s and MetalLB at your disposal, creating and maintaining your self-hosted applications and services has never been more accessible.
+In today's digital landscape, owning and managing your software infrastructure has become an increasingly appealing option for individuals and organizations alike. The desire for control, privacy, and customization has driven a surge in the popularity of self-hosting solutions. With technologies like K3s and MetalLB at your disposal, creating and maintaining your self-hosted applications and services has never been easier.
 
 Kubernetes allows you to run multiple containerized services with a shared pool of resources. In Kubernetes, there are two types of nodes; A working node and the primary node. The primary node runs the Kubernetes server instance. This server manages all of the running Kubernetes Services, Pods, Deployments, and other objects. It will start new container deployments on worker nodes when needed, coordinate with a DNS server to create records for service-to-service discovery, manage the networking between the different nodes, and many other tasks.
 
@@ -73,15 +73,15 @@ You will need to replace the `ansible_ssh_host` definition with the appropriate 
 
 ![Ping All Devices Command Output](./assets/ping_command.png "Ping All Devices Command Output")
 
-## Install k3s on the Raspberry Pis
+## Install K3s on the Raspberry Pis
 
-To install the k3s on the Raspberry Pi we first need to download the installer script. Run this Ansible command to do that `ansible all -m get_url -a "url=https://get.k3s.io dest=/tmp/k3s mode=0755"`. This will download the installer script to the `/tmp` directory on each of the Raspberry Pis. Next, install K3s on your primary node. Run `ansible k3sprimary -e INSTALL_K3S_EXEC=--disable=servicelb -e K3S_KUBECONFIG_MODE=644 -a "bash /tmp/k3s" -v`. 
+To install the K3s on the Raspberry Pi we first need to download the installer script. Run this Ansible command to do that `ansible all -m get_url -a "url=https://get.k3s.io dest=/tmp/k3s mode=0755"`. This will download the installer script to the `/tmp` directory on each of the Raspberry Pis. Next, install K3s on your primary node. Run `ansible k3sprimary -e INSTALL_K3S_EXEC=--disable=servicelb -e K3S_KUBECONFIG_MODE=644 -a "bash /tmp/k3s" -v`. 
 
 **Note:** We are disabling ServiceLB which comes default with K3s as it interferes with Metallb.
 
 On completion, of this operation, you can copy the Kubernetes config for the primary node to your local machine. Run the command `scp root@<PRIMARY IP>:/etc/rancher/k3s/k3s.yaml ~/.kube/config` and replace `<PRIMARY IP>` with your primary node's IP. You will need to modify the local `~/.kube/config` file on your computer. Run `nano ~/.kube/config` and change the line that defines `server:` from `127.0.0.1` to the IP of your primary node.
 
-Now get the Node Token that authorizes additional nodes to interact with your primary node. To do this run `ssh node@<PRIMARY IP> "sudo cat /var/lib/rancher/k3s/server/node-token"` with your primary nodes IP and make note of the output. Now to install k3s on the additional nodes run `ansible k3snodes -e K3S_TOKEN=<TOKEN> -e K3S_URL="https://<PRIMARY IP>:6443" -e K3S_NODE_NAME={{inventory_hostname}} -a "bash /tmp/k3s" -v`. Replace `<TOKEN>` with the token you got from the output of the previous command, and `<PRIMARY IP>` with the IP of the primary node. Verify that all the nodes are integrated with the cluster by running `kubectl get nodes`. You should see the following output:
+Now get the Node Token that authorizes additional nodes to interact with your primary node. To do this run `ssh node@<PRIMARY IP> "sudo cat /var/lib/rancher/k3s/server/node-token"` with your primary nodes IP and make note of the output. Now to install K3s on the additional nodes run `ansible k3snodes -e K3S_TOKEN=<TOKEN> -e K3S_URL="https://<PRIMARY IP>:6443" -e K3S_NODE_NAME={{inventory_hostname}} -a "bash /tmp/k3s" -v`. Replace `<TOKEN>` with the token you got from the output of the previous command, and `<PRIMARY IP>` with the IP of the primary node. Verify that all the nodes are integrated with the cluster by running `kubectl get nodes`. You should see the following output:
 
 ![Get Nodes](./assets/get_nodes.png "Get Nodes")
 
