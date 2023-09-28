@@ -1,7 +1,5 @@
 # Raspberry Pi Kubernetes Cluster with K3s and Metallb
 
-Understanding Kubernetes is crucial to having a successful career as a backend or full-stack developer. Many companies like Google, Spotify, Amazon, and Reddit use Kubernetes to host and manage their services. However, it can be expensive to have a persistent Kubernetes cluster where you can run long-term experiments to learn. For example, a two node cluster with load balancing on Linode costs around $40 USD a month. If you have an old computer or Raspberry Pi kicking around you can make a bare metal cluster using K3s. In this tutorial, I go over how to make a K3s cluster on a few Raspberry Pis and show how to expose services on your network using Metallb. I then show how to run a simple nginx server and service to demonstrate the cluster is working.
-
 In today's digital landscape, owning and managing your software infrastructure has become an increasingly appealing option for individuals and organizations alike. The desire for control, privacy, and customization has driven a surge in the popularity of self-hosting solutions. With technologies like K3s and MetalLB at your disposal, creating and maintaining your self-hosted applications and services has never been easier.
 
 ## K3s, Metallb and Kubernetes
@@ -41,7 +39,7 @@ For your primary node, the settings menu should look something like:
 
 Connect each of the Raspberry Pis to the switch and power them on. For **each** of the Raspberry Pis, you will need to SSH into them using a tool like Putty, or your computer's OpenSSH command. To get the IP Address of each of the Raspberry Pis use your router's admin panel to see the DHCP leases, or use `nmap`. Use the following command to SSH into the primary node with OpenSSH `ssh node@<PRIMARY IP>` where `<PRIMARY IP>` is the address of your primary node retrieved in the previous step. Once you have an established SSH connection, open up the networking config for the Pi by running `sudo nano /etc/dhcpcd.conf`. We need to modify this file so that our Pi has a static IP. My primary node has an IP of 192.168.4.200 and I increment the IP by 1 for each of my regular nodes. Scroll down the file until you see the comment `# Example static IP configuration:`. Uncomment the `interface`, `static router`, and `static domain_name_server` lines. Fill that information with your network's specific setup. The configuration for my primary node is: 
 
-``` conf
+``` ini
 # Example static IP configuration:
 interface eth0
 static ip_address=192.168.4.200/24
@@ -57,7 +55,7 @@ Ansible is popular for automating the configuration of network-connected devices
 
 You need to set up a `host.ini` file that contains the IP addresses of the Raspberry Pis we want to configure. If you installed Ansible with `pip` all you will need to do is create a file under `~/.ansible/host.ini`. The host file should look like:
 
-``` conf
+``` ini
 [all]
 k3sprimary ansible_ssh_host=192.168.4.200
 k3snode1 ansible_ssh_host=192.168.4.201
@@ -95,7 +93,7 @@ To install Metallb on your cluster run `kubectl apply -f https://raw.githubuserc
 
 Metallb needs a range of IP addresses that it can allocate to different Kubernetes Service Objects. To give Metallb a range of IP addresses, create a file called `metallb-config.yml` with the following contents:
 
-``` yml 
+``` yaml 
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
