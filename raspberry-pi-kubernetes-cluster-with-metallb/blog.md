@@ -33,7 +33,7 @@ Open up the Raspberry Pi Imager tool. From the menu select the device you want t
 
 For your primary node, the settings menu should look something like: 
 
-![Raspi Config](./assets/raspi_config.png "Raspi Config")
+![Raspi Config](https://raw.githubusercontent.com/kevinlutzer/blogs/master/raspberry-pi-kubernetes-cluster-with-metallb/assets/raspi_config.png "Raspi Config")
 
 ## Networking the Raspberry Pis
 
@@ -71,7 +71,7 @@ k3snode2
 
 You will need to replace the `ansible_ssh_host` definition with the appropriate IP addresses. Note that in the hosts file, we can group devices by placing the hostnames under a group name like `[name]`. This allows you to run Ansible commands that target specific groups of devices. To verify that Ansible can connect to the Raspberry Pis, run the command `ansible all -m ping`. You should see the following response in your terminal:
 
-![Ping All Devices Command Output](./assets/ping_command.png "Ping All Devices Command Output")
+![Ping All Devices Command Output](https://raw.githubusercontent.com/kevinlutzer/blogs/master/raspberry-pi-kubernetes-cluster-with-metallb/assets/ping_command.png "Ping All Devices Command Output")
 
 ## Install K3s on the Raspberry Pis
 
@@ -83,7 +83,7 @@ On completion, of this operation, you can copy the Kubernetes config for the pri
 
 Now get the Node Token that authorizes additional nodes to interact with your primary node. To do this run `ssh node@<PRIMARY IP> "sudo cat /var/lib/rancher/k3s/server/node-token"` with your primary nodes IP and make note of the output. Now to install K3s on the additional nodes run `ansible k3snodes -e K3S_TOKEN=<TOKEN> -e K3S_URL="https://<PRIMARY IP>:6443" -e K3S_NODE_NAME={{inventory_hostname}} -a "bash /tmp/k3s" -v`. Replace `<TOKEN>` with the token you got from the output of the previous command, and `<PRIMARY IP>` with the IP of the primary node. Verify that all the nodes are integrated with the cluster by running `kubectl get nodes`. You should see the following output:
 
-![Get Nodes](./assets/get_nodes.png "Get Nodes")
+![Get Nodes](https://raw.githubusercontent.com/kevinlutzer/blogs/master/raspberry-pi-kubernetes-cluster-with-metallb/assets/get_nodes.png "Get Nodes")
 
 ## Installing Metallb In Your Cluster
 
@@ -123,7 +123,7 @@ To setup a simple nginx deployment to test that your cluster is working, run the
 
 Change `<IP ADDRESS>` to a free IP address in the range you specified in the Metallb configuration. Navigate to that IP address in the browser of your choice and you should see the following page: 
 
-![NGINX](./assets/nginx.png "NGINX")
+![NGINX](https://raw.githubusercontent.com/kevinlutzer/blogs/master/raspberry-pi-kubernetes-cluster-with-metallb/assets/nginx.png "NGINX")
 
 Congratulations 🥳! You have set up a working K3s cluster with Raspberry Pis. To remove the nginx pod and service run:
 
