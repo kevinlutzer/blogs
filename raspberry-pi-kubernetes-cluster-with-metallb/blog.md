@@ -37,7 +37,13 @@ For your primary node, the settings menu should look something like:
 
 ## Networking the Raspberry Pis
 
-Connect each of the Raspberry Pis to the switch and power them on. For **each** of the Raspberry Pis, you will need to SSH into them using a tool like Putty, or your computer's OpenSSH command. To get the IP Address of each of the Raspberry Pis use your router's admin panel to see the DHCP leases, or use `nmap`. Use the following command to SSH into the primary node with OpenSSH `ssh node@<PRIMARY IP>` where `<PRIMARY IP>` is the address of your primary node retrieved in the previous step. Once you have an established SSH connection, open up the networking config for the Pi by running `sudo nano /etc/dhcpcd.conf`. We need to modify this file so that our Pi has a static IP. My primary node has an IP of 192.168.4.200 and I increment the IP by 1 for each of my regular nodes. Scroll down the file until you see the comment `# Example static IP configuration:`. Uncomment the `interface`, `static router`, and `static domain_name_server` lines. Fill that information with your network's specific setup. The configuration for my primary node is: 
+Connect each of the Raspberry Pis to the switch and power them on. For **each** of the Raspberry Pis, you will need to SSH into them using a tool like Putty, or your computer's OpenSSH command. To get the IP Address of each of the Raspberry Pis use your router's admin panel to see the DHCP leases, or use `nmap`. Use the following command to SSH into the primary node with OpenSSH `ssh node@<PRIMARY IP>` where `<PRIMARY IP>` is the address of your primary node retrieved in the previous step. Once you have an established SSH connection, open up the networking config for the Pi by running:
+
+``` bash
+sudo nano /etc/dhcpcd.conf
+```
+
+We need to modify this file so that our Pi has a static IP. My primary node has an IP of 192.168.4.200 and I increment the IP by 1 for each of my regular nodes. Scroll down the file until you see the comment `# Example static IP configuration:`. Uncomment the `interface`, `static router`, and `static domain_name_server` lines. Fill that information with your network's specific setup. The configuration for my primary node is: 
 
 ``` ini
 # Example static IP configuration:
@@ -48,7 +54,13 @@ static routers=192.168.4.1
 static domain_name_servers=192.168.4.1 1.1.1.1 8.8.8.8
 ```
 
-Once you have saved that file, run the command `sudo mkdir -p /root/.ssh && sudo cp ~/.ssh/authorized_keys /root/.ssh`. This will copy your computer's public key to the root user's SSH configuration, allowing Ansible to run root-privileged commands over SSH. 
+Once you have saved that file, run the command:
+
+``` bash
+sudo mkdir -p /root/.ssh && sudo cp ~/.ssh/authorized_keys /root/.ssh
+```
+
+This will copy your computer's public key to the root user's SSH configuration, allowing Ansible to run root-privileged commands over SSH. 
 
 ## Creating the Ansible Configuration for the Cluster
 Ansible is popular for automating the configuration of network-connected devices. How Ansible works, won't be discussed in this blog. If you want to learn more about Ansible, take a look at the [free ebooks](https://ansible.jeffgeerling.com/) Jeff Geerling has created on this topic.
@@ -75,19 +87,63 @@ You will need to replace the `ansible_ssh_host` definition with the appropriate 
 
 ## Install K3s on the Raspberry Pis
 
-To install the K3s on the Raspberry Pi we first need to download the installer script. Run this Ansible command to do that `ansible all -m get_url -a "url=https://get.k3s.io dest=/tmp/k3s mode=0755"`. This will download the installer script to the `/tmp` directory on each of the Raspberry Pis. Next, install K3s on your primary node. Run `ansible k3sprimary -e INSTALL_K3S_EXEC=--disable=servicelb -e K3S_KUBECONFIG_MODE=644 -a "bash /tmp/k3s" -v`. 
+To install the K3s on the Raspberry Pi we first need to download the installer script. Run this Ansible command to do that:
+
+``` bash
+ansible all -m get_url -a "url=https://get.k3s.io dest=/tmp/k3s mode=0755"
+```
+
+This will download the installer script to the `/tmp` directory on each of the Raspberry Pis. Next, install K3s on your primary node. Run:
+
+``` bash
+ansible k3sprimary -e INSTALL_K3S_EXEC=--disable=servicelb -e K3S_KUBECONFIG_MODE=644 -a "bash /tmp/k3s" -v
+``` 
 
 **Note:** We are disabling ServiceLB which comes default with K3s as it interferes with Metallb.
 
-On completion, of this operation, you can copy the Kubernetes config for the primary node to your local machine. Run the command `scp root@<PRIMARY IP>:/etc/rancher/k3s/k3s.yaml ~/.kube/config` and replace `<PRIMARY IP>` with your primary node's IP. You will need to modify the local `~/.kube/config` file on your computer. Run `nano ~/.kube/config` and change the line that defines `server:` from `127.0.0.1` to the IP of your primary node.
+On completion, of this operation, you can copy the Kubernetes config for the primary node to your local machine. Run the command: 
 
-Now get the Node Token that authorizes additional nodes to interact with your primary node. To do this run `ssh node@<PRIMARY IP> "sudo cat /var/lib/rancher/k3s/server/node-token"` with your primary nodes IP and make note of the output. Now to install K3s on the additional nodes run `ansible k3snodes -e K3S_TOKEN=<TOKEN> -e K3S_URL="https://<PRIMARY IP>:6443" -e K3S_NODE_NAME={{inventory_hostname}} -a "bash /tmp/k3s" -v`. Replace `<TOKEN>` with the token you got from the output of the previous command, and `<PRIMARY IP>` with the IP of the primary node. Verify that all the nodes are integrated with the cluster by running `kubectl get nodes`. You should see the following output:
+```scp root@<PRIMARY IP>:/etc/rancher/k3s/k3s.yaml ~/.kube/config``` 
+
+Replace `<PRIMARY IP>` with your primary node's IP. You will need to modify the local `~/.kube/config` file on your computer. Run:
+
+``` bash
+nano ~/.kube/config
+``` 
+
+Change the line that defines `server:` from `127.0.0.1` to the IP of your primary node.
+
+Now get the Node Token that authorizes additional nodes to interact with your primary node. To do this run:
+
+``` bash 
+ssh node@<PRIMARY IP> "sudo cat /var/lib/rancher/k3s/server/node-token"
+``` 
+
+with your primary nodes IP and make note of the output. Now to install K3s on the additional nodes run:
+ 
+```ansible k3snodes -e K3S_TOKEN=<TOKEN> -e K3S_URL="https://<PRIMARY IP>:6443" -e K3S_NODE_NAME={{inventory_hostname}} -a "bash /tmp/k3s" -v```
+
+Replace `<TOKEN>` with the token you got from the output of the previous command, and `<PRIMARY IP>` with the IP of the primary node. Verify that all the nodes are integrated with the cluster by running:
+
+`kubectl get nodes`.
+
+You should see the following output:
 
 ![Get Nodes](https://raw.githubusercontent.com/kevinlutzer/blogs/master/raspberry-pi-kubernetes-cluster-with-metallb/assets/get_nodes.png "Get Nodes")
 
 ## Installing Metallb In Your Cluster
 
-To install Metallb on your cluster run `kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-native.yaml`. Watch the pods in the `metallb-system` namespace come online by running `kubectl get pods -n metallb-system`
+To install Metallb on your cluster run: 
+
+``` bash 
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-native.yaml
+```
+
+Watch the pods in the `metallb-system` namespace come online by running: 
+
+``` bash 
+kubectl get pods -n metallb-system
+```
 
 ### Configuring Metallb
 
@@ -112,14 +168,17 @@ spec:
   ipAddressPools:
   - pool
 ```
+
 Make sure you replace the `<IP RANGE>` line with something that is appropriate for your network. If you can, use an IP range that is not allocated for your router's DHCP service. An example IP range is `192.168.1.5-192.168.1.10`. Apply the configuration by running `kubectl apply -f metallb-config.yml`. Now Metallb will now be able to advertise the IP addresses in the range you specified to other devices on your network.
 
 ## Testing your Cluster with nginx
 
 To setup a simple nginx deployment to test that your cluster is working, run the following commands to create a nginx pod and service:
 
-`kubectl run my-nginx --image=nginx --port=80`
-`kubectl expose pod my-nginx --port=80 --type=LoadBalancer --load-balancer-ip=<IP ADDRESS> # example: 192.168.1.5`
+``` bash
+kubectl run my-nginx --image=nginx --port=80
+kubectl expose pod my-nginx --port=80 --type=LoadBalancer --load-balancer-ip=<IP ADDRESS> # example: 192.168.1.5
+```
 
 Change `<IP ADDRESS>` to a free IP address in the range you specified in the Metallb configuration. Navigate to that IP address in the browser of your choice and you should see the following page: 
 
@@ -135,5 +194,4 @@ K3s is a Kubernetes variant that is optimized for ARM CPUs. This makes it perfec
 
 ## What's Next? 
 
-If you would like to continue experimenting with K3s I would recommend installing [Longhorn](https://docs.k3s.io/storage#setting-up-longhorn) in your cluster. There are some additional changes you will need to make to your Raspberry Pis, but it will give you persistent and redundant storage. Currently, if you would want to save data from one of your services you would have to define a PersistentVolumenClaim object that allocates disk memory on a specific node. If that node goes offline you will lose your data! Longhorn distributes data across multiple nodes to eliminate that problem. 
-
+If you would like to continue experimenting with K3s I would recommend installing [Longhorn](https://docs.k3s.io/storage#setting-up-longhorn) in your cluster. There are some additional changes you will need to make to your Raspberry Pis, but it will give you persistent and redundant storage. Currently, if you would want to save data from one of your services you would have to define a PersistentVolumenClaim object that allocates disk memory on a specific node. If that node goes offline you will lose your data! Longhorn distributes data across multiple nodes to eliminate that problem.
