@@ -105,7 +105,7 @@ We’re ready to start compiling and uploading code!
 ## Using the Arduino CLI to Program the Arduino
 On your computer, create a directory called `blink` and add a directory called `bin` to it. Create a file called `blink.ino` and add the following to it:
 
-```c++
+```cpp
 void setup() {
  pinMode(LED_BUILTIN, OUTPUT);
 }
