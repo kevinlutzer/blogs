@@ -24,7 +24,7 @@ For our light, let's use a simple led. Connect pin 10 (GPIO15) on the Raspberry 
 
 To simply the construction, I soldered together a little contraption using a 2 pin female header, the resistor, and the LED. Here is an image of it on the Raspberry Pi:
 
-![Raspberry Pi With Circuit](https://raw.githubusercontent.com/kevinlutzer/blogs/master/building-a-diy-smart-light-using-a-raspberry-pi/part1/images/raspberry_pi_with_circuit.jpeg "Raspberry Pi With Circuit")
+![Raspberry Pi With Circuit](https://raw.githubusercontent.com/kevinlutzer/blogs/master/building-a-diy-smart-light-using-a-raspberry-pi/part1/images/thumbnail.jpeg "Raspberry Pi With Circuit")
 
 ## Testing the Circuit
 
