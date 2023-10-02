@@ -115,8 +115,6 @@ Trying turning on your light by running the following command in your terminal.
 curl https://us-central1-<PROJECT_ID>.cloudfunctions.net/HandleLightState?state=ON
 ```
 
-curl https://us-central1-<PROJECT_ID>.cloudfunctions.net/HandleLightState?state=ON
-
 Make sure that the IoT client code is still running on the Raspberry Pi! Now if you want to turn the light off, just specify ‘OFF’ for the ‘state’ query param. Note the **state query param is not dependent on the case of the letters.** So ‘On’ will have the same effect as ‘ON’.
 
 ## Using IFTTT To Connect the API and Google Assistant
@@ -131,7 +129,12 @@ A ton of different companies have integrations with IFTTT, namely Google and Sam
 
 ![Setup App](https://raw.githubusercontent.com/kevinlutzer/blogs/master/building-a-diy-smart-light-using-a-raspberry-pi/part2/images/setup_app.gif "Setup App")
 
-The next step is to set up the action. After you have finished creating the trigger, you should be back to the page that has the text, “If This Then That.” Click on the ‘+ That’ button and search for the Webhook action. Click on the card, that says “Make a webhook request”. You can specify the URL of the API we created before. Note that you don’t have to fill out any other information for this to work. The URL will be in the format of ‘https://us-central1-<PROJECT_ID>.cloudfunctions.net/HandleLightState?state= {{TextField}}’. In this case, the ‘{{TextField}}’ template variable will have the value of the ‘$’ we specified when creating the trigger. Once you click ‘Create Action’ and ‘Finish’, your IFTTT applet is complete!
+The next step is to set up the action. After you have finished creating the trigger, you should be back to the page that has the text, “If This Then That.” Click on the ‘+ That’ button and search for the Webhook action. Click on the card, that says “Make a webhook request”. You can specify the URL of the API we created before. Note that you don’t have to fill out any other information for this to work. The URL will be in the format of:
+
+```bash
+https://us-central1-<PROJECT_ID>.cloudfunctions.net/HandleLightState?state= {{TextField}}`
+```
+In this case, the `{{TextField}}` template variable will have the value of the ‘$’ we specified when creating the trigger. Once you click ‘Create Action’ and ‘Finish’, your IFTTT applet is complete!
 
 ![Setup Action](https://raw.githubusercontent.com/kevinlutzer/blogs/master/building-a-diy-smart-light-using-a-raspberry-pi/part2/images/setup_action.gif "Setup Action")
 

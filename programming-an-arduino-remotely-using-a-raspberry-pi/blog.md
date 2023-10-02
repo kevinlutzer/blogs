@@ -28,7 +28,7 @@ We’ll start by installing the [https://www.raspberrypi.com/software/](Raspberr
 
 To install the Arduino CLI on Mac OSX, use [https://brew.sh/](Homebrew):
 
-```
+``` bash
 brew update
 brew install arduino-cli
 ```
@@ -43,7 +43,9 @@ Ensure the directory you installed the Arduino CLI to is in your computer CLI’
 
 Now, you need to install the board files for the specific Arduino Device you’re using. You can find the name of the package you have to install by running:
 
-`arduino-cli core search <keywords>`
+``` bash
+arduino-cli core search <keywords>
+```
 
 If you want to see all board files that are avaliable, you can ommit the `<keywords>` argument to the search command. This will produce a list that looks like: 
 
@@ -51,11 +53,15 @@ If you want to see all board files that are avaliable, you can ommit the `<keywo
 
 The id field is the value we need when installing the board files. I’m using an older Arduino Nano that uses an AVR chip, so I’ll run the following:
 
-`arduino-cli core install arduino:avr`
+``` bash
+arduino-cli core install arduino:avr
+```
 
 However if you are using one of newer R4 boards like this [https://store-usa.arduino.cc/products/uno-r4-wifi](UNO R4 WiFi) you would have to run the following:
 
-`arduino-cli core install arduino:renesas_uno`
+``` bash
+arduino-cli core install arduino:renesas_uno
+```
 
 ## Setting Up the Raspberry Pi
 Start up the Raspberry Pi Imager on your main computer. Under the **Raspberry Pi OS (Other)** menu, set the operating system to be **Raspberry Pi OS Lite (32-bit)** and select the appropriate storage device using the **Choose Storage** menu.
@@ -75,7 +81,9 @@ Click **save** then **write**. Creating the bootable SD card will take a few min
 
 Once the OS has been written to the SD card, remove it, put it into the Raspberry Pi and power it on. Once the Raspberry Pi boots, SSH into it by running the following command:
 
-`ssh pi@raspberrypi.local`
+``` bash
+ssh pi@raspberrypi.local
+```
 
 From there, update the Raspberry Pi's aptitude package registry and update existing packages on the OS to the newest versions:
 
@@ -114,7 +122,9 @@ Return to the `blink` directory. This is where you’ll run the compile command 
 
 Since I’m using the Arduino Nano under the AVR family, I’ll run the following:
 
-`arduino-cli compile -b arduino:avr:nano --output-dir=./bin`
+``` bash
+arduino-cli compile -b arduino:avr:nano --output-dir=./bin
+```
 
 **Note:** Be sure to replace the board name with the specific board you’re using.
 
@@ -122,15 +132,21 @@ Next, we need to make sure that the Raspberry Pi has a directory on it to transf
 
 To create this directory from your computer, run:
 
-`ssh pi@raspberrypi.local 'mkdir -p ~/blink'`
+``` bash
+ssh pi@raspberrypi.local 'mkdir -p ~/blink'
+```
 
 We’ll use the secure copy protocol (SCP) to upload our binary files to the Raspberry Pi. To upload the binaries from your computer to the `~/blink` directory on the Raspberry Pi, run:
 
-`scp bin/* pi@raspberrypi.local:~/blink`
+``` bash
+scp bin/* pi@raspberrypi.local:~/blink
+```
 
 Next, we’ll upload the code from the Raspberry Pi using the Arduino CLI `upload` command on your computer:
 
-`ssh pi@rasperrypi.local '/home/pi/local/bin/arduino-cli upload -b arduino:avr:nano -p /dev/ttyUSB0 --input-dir=/home/pi/blink'`.
+```bash 
+ssh pi@rasperrypi.local '/home/pi/local/bin/arduino-cli upload -b arduino:avr:nano -p /dev/ttyUSB0 --input-dir=/home/pi/blink'
+```
 
 **Note:** My Arduino Nano is mounted to `/dev/ttyUSB0`. You can find what port your Arduino will be programmed from by running `ssh ssh pi@rasperrypi.local 'ls /dev/'` and comparing the output from when the device is plugged in to when it is not. There will be a path that is is missing the second time you run this command. This path will be what you have to specify in the upload command as the programmer's path. If you are using an external programmer like the [https://reprap.org/wiki/USBasp](USBasp), the Arduino CLI should find what port the device is connected to if you just specify the name of the programmer. In this case you can replace the argument `-p /dev/ttyUSB0` with `-P uspasp` in the upload command. 
 
