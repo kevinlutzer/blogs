@@ -49,7 +49,7 @@ The MQTT [client](https://github.com/eclipse/paho.mqtt.golang) that we are using
 
 Lets build a small wrapper around the MQTT Client to allow us to publish and subscribe to messages. We are going to use a struct to hold an instance of the client that has connections to the test MQTT broker. This struct will contain the different method-recievers we need to perform our publish and subscribe operations. Start by creating a directory called `sample` with an file `mqtt_client.go` containing the following code.
 
-``` golang
+``` go
 package main
 
 import MQTT "github.com/eclipse/paho.mqtt.golang"
@@ -102,7 +102,7 @@ Note that most of the methods that require some sort of interaction with the ser
 
 Now that we have our client wrapper, lets built a small program to test it. In a new `main.go` file under the same directory add the following code.
 
-``` golang
+``` go
 package main
 
 import (
