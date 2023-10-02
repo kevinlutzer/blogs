@@ -153,7 +153,8 @@ ssh pi@rasperrypi.local '/home/pi/local/bin/arduino-cli upload -b arduino:avr:na
 If you want to run only one command instead of three each time, you can concatenate the command with the `&&` bash operator:
 
 ``` bash
-arduino-cli compile -b arduino:avr:nano --output-dir=./bin && scp bin/* pi@raspberrypi.local:~/blink && ssh pi@rasperrypi.local '/home/pi/local/bin/arduino-cli upload -b arduino:avr:nano -p /dev/ttyUSB0 --input-dir=/home/pi/blink'
+arduino-cli compile -b arduino:avr:nano --output-dir=./bin && scp bin/* pi@raspberrypi.local:~/blink && \
+ssh pi@rasperrypi.local '/home/pi/local/bin/arduino-cli upload -b arduino:avr:nano -p /dev/ttyUSB0 --input-dir=/home/pi/blink'
 ```
 
 This will run all three commands synchronously. Be careful though — if one of those commands fails, the next command in the sequence won't run.
