@@ -1,4 +1,4 @@
-# Managed TSL Certs for Prive  Kubernetes Cluster with CloudFlaire, Cert Manager, and Let's Encrypt
+# Managed SSL Certs for a Private Kubernetes Cluster with CloudFlare, Cert Manager, and Let's Encrypt
 
 Secure Socket Layer (SSL) certifications play a crucial role in your on-premise or cloud Kubernetes security. These certification:
 
@@ -64,7 +64,7 @@ Issuer objects are used to describe who the trusted CA you are using is, as wel
 
 The Certificate Object provides cert-manager information about when to renew the certificate, the expiration date, what encryption methods the certificate should use for the public/private key, what domain the certificate is for, and the owner email address.
 
-To issue a certificate from Let's Encrypt, cert-manager gets a challenge value from Let's Encrypt's ACME servers. This value is to be put as a TXT record on your domain in Cloudflare. Once cert-manager creates this TXT record, it tells Let's Encrypt to validate the record's contents. Let's Encrypt compares the value of TXT record to that given to cert-manager. If they are the same, Let's Encrypt will issue a certificate to cert-manager. cert-manager will then create a Kubernetes secret from that certificate. Here is a diagram of how this all works, taken from an nginx [blog](https://www.nginx.com/blog/automating-certificate-management-in-a-kubernetes-environment/)
+To issue a certificate from Let's Encrypt, cert-manager gets a challenge value from Let's Encrypt's ACME servers. This value is to be put as a TXT record on your domain in Cloudflare. Once cert-manager creates this TXT record, it tells Let's Encrypt to validate the record's contents. Let's Encrypt compares the value of TXT record to that given to cert-manager. If they are the same, Let's Encrypt will issue a certificate to cert-manager. cert-manager will then create a Kubernetes secret from that certificate. Here is a diagram of how this all works, taken from an nginx [blog](https://www.nginx.com/blog/automating-certificate-management-in-a-kubernetes-environment/).
 
 ![DNS 01 Process](./assets/dns01_process.svg "DNS 01 Process")
 
@@ -93,7 +93,7 @@ cert-manager-webhook-869b6c65c4-9t7sb      1/1     Running   0          11s
 
 ### Creating the Cloudflare API Token
 
-Now you need to create a secret containing a Cloudflare API token. This token will be used to create and delete the TXT record on your domain needed during the DNS-01 challenge process. To do this, navigate to https://dash.cloudflare.com/profile/api-tokens. From there, click on `Create Token` and then on the following page click on the `Use Template` button in the same row as `Edit zone DNS`. This will allow you to configure what zone resources the token will have access to. Under Zone Resources choose `Include All Zones`. You can additionally add `Client IP Address Filtering` as well. This is **optional**, but I recommend this as it helps add some protection for your token if it is leaked. This IP will be the public IP of your computer. Click on continue to summary and the `Create Token`. Take the token value you get from that page and create a Kubernetes secret from it using the following command by replacing `<`TOKEN>` with your token: 
+Now you need to create a secret containing a Cloudflare API token. This token will be used to create and delete the TXT record on your domain needed during the DNS-01 challenge process. To do this, navigate to https://dash.cloudflare.com/profile/api-tokens. From there, click on `Create Token` and then on the following page click on the `Use Template` button in the same row as `Edit zone DNS`. This will allow you to configure what zone resources the token will have access to. Under Zone Resources choose `Include All Zones`. You can additionally add `Client IP Address Filtering` as well. This is **optional**, but I recommend this as it helps add some protection for your token if it is leaked. This IP will be the public IP of your computer. Click on continue to summary and the `Create Token`. Take the token value you get from that page and create a Kubernetes secret from it using the following command by replacing `<TOKEN>` with your token: 
 
 ``` bash
 kubectl create secret generic cloudflare-api-key-secret --from-literal=api-key=<TOKEN>
