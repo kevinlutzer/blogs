@@ -1,0 +1,22 @@
+# certificate.yml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hello-world-ca-tsl
+spec:
+  duration: 2h # 90d
+  renewBefore: 1h # 15d
+  subject:
+    organizations:
+      - testorganization
+  secretName: hello-world-ca-tsl
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  dnsNames:
+    - hello-world.kevinlutzer.ca
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+    group: cert-manager.io
