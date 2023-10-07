@@ -41,15 +41,15 @@ davina.ns.cloudflare.com
 
 It should look like: 
 
-![GoDaddy Nameserver Setup](./assets/godaddy_nameservers.png "GoDaddy Nameserver Setup")
+![GoDaddy Nameserver Setup](https://raw.githubusercontent.com/kevinlutzer/blogs/master/managed-ssl-certificates-for-a-private-kubernetes-cluster/assets/godaddy_nameservers.png "GoDaddy Nameserver Setup")
 
 The steps to set the NS records are identical for other domain providers like Google. You will have to wait up to 48 hours for your domain's NS records to propagate to other nameservers. Additionally, you could set up your computer's DNS server to be Cloudflare's `1.1.1.1` server so you don't have to wait. To do this on macOS, navigate to your network details and then click on the `DNS` tab. Click on the `+` icon under `DNS Servers` and add `1.1.1.1`. The following image shows what this should look like:
 
-![macOS DNS Setup](./assets/macos_dns_setup.png "macOS DNS Setup")
+![macOS DNS Setup](https://raw.githubusercontent.com/kevinlutzer/blogs/master/managed-ssl-certificates-for-a-private-kubernetes-cluster/assets/macos_dns_setup.png "macOS DNS Setup")
 
 Set up a new A record for your domain in Cloudflare to point `hello-world.<YOUR DOMAIN>` to `127.0.0.1`. This is what the setup should look like in Cloudflare's UI: 
 
-![Cloudflare Domain Setup](./assets/cloudflare_domain_setup.png "Cloudflare Domain Setup")
+![Cloudflare Domain Setup](https://raw.githubusercontent.com/kevinlutzer/blogs/master/managed-ssl-certificates-for-a-private-kubernetes-cluster/assets/cloudflare_domain_setup.png "Cloudflare Domain Setup")
 
 Pointing a DNS record to a virtual IP like `127.0.0.1` or a private IP like `192.168.1.2` is unusual, but it gives us the following benefits: 
 
@@ -66,7 +66,7 @@ The Certificate Object provides cert-manager information about when to renew the
 
 To issue a certificate from Let's Encrypt, cert-manager gets a challenge value from Let's Encrypt's ACME servers. This value is to be put as a TXT record on your domain in Cloudflare. Once cert-manager creates this TXT record, it tells Let's Encrypt to validate the record's contents. Let's Encrypt compares the value of TXT record to that given to cert-manager. If they are the same, Let's Encrypt will issue a certificate to cert-manager. cert-manager will then create a Kubernetes secret from that certificate. Here is a diagram of how this all works, taken from an nginx [blog](https://www.nginx.com/blog/automating-certificate-management-in-a-kubernetes-environment/).
 
-![DNS 01 Process](./assets/dns01_process.svg "DNS 01 Process")
+![DNS 01 Process](https://raw.githubusercontent.com/kevinlutzer/blogs/master/managed-ssl-certificates-for-a-private-kubernetes-cluster/assets/dns01_process.svg "DNS 01 Process")
 
 For private and virtual IPs the DNS-01 challenge type is perfect as you don't need to have incoming traffic from the internet to your Kubernetes cluster to complete the process.
 
