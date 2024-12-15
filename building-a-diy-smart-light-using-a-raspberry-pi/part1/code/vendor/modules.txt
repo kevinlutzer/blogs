@@ -20,24 +20,24 @@ github.com/sigurn/utils
 # gobot.io/x/gobot v1.14.0
 gobot.io/x/gobot
 gobot.io/x/gobot/drivers/gpio
-gobot.io/x/gobot/platforms/raspi
 gobot.io/x/gobot/drivers/i2c
 gobot.io/x/gobot/drivers/spi
+gobot.io/x/gobot/platforms/raspi
 gobot.io/x/gobot/sysfs
-# golang.org/x/net v0.0.0-20200202094626-16171245cfb2
+# golang.org/x/net v0.7.0
+golang.org/x/net/internal/socks
 golang.org/x/net/proxy
 golang.org/x/net/websocket
-golang.org/x/net/internal/socks
 # periph.io/x/periph v3.6.2+incompatible
-periph.io/x/periph/conn/physic
-periph.io/x/periph/conn/spi
-periph.io/x/periph/host/sysfs
+periph.io/x/periph
 periph.io/x/periph/conn
 periph.io/x/periph/conn/gpio
-periph.io/x/periph/conn/pin
-periph.io/x/periph
 periph.io/x/periph/conn/gpio/gpioreg
 periph.io/x/periph/conn/i2c
 periph.io/x/periph/conn/i2c/i2creg
+periph.io/x/periph/conn/physic
+periph.io/x/periph/conn/pin
+periph.io/x/periph/conn/spi
 periph.io/x/periph/conn/spi/spireg
 periph.io/x/periph/host/fs
+periph.io/x/periph/host/sysfs
