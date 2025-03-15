@@ -1,0 +1,30 @@
+users:
+    - default # This is the default ubuntu user
+    - name: work
+      groups: users,disk,dialout # dialout and disk give the work user access to storage and any connected serial terminals. 
+      plain_text_passwd: newpassword # this will be the password for the user you would login with ssh
+      sudo: ALL=(ALL) NOPASSWD:ALL # similar to how the default user is
+      ssh_import_id:
+        - gh:kevinlutzer # change this to be your Github user, it will add your public key so you can SSH into the Rasberry Pi with the same Github private keys
+
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable # Where apt can find docker
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88 # The ID of the GPG key docker uses
+
+packages:
+  - docker-ce
+  - docker-ce-cli
+  - build-essential # C toolchain
+  - libssl-dev # dev package for Openssl development
+
+write_files:
+  - content: |
+      echo "Hello World"
+    owner: root:root
+    permissions: '0755'
+    path: /opt/hello_world
+
+runcmds: 
+    - ./opt/hello_world
