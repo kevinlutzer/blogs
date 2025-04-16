@@ -8,6 +8,8 @@ users:
     ssh_import_id:
       - gh:kevinlutzer # change this to be your Github user, it will add your public Github key so you can SSH into the Raspberry Pi with the same Github private key
 
+ssh_pwauth: true # needed to remotely access the RPi with SSH by password
+
 apt:
   sources:
     docker.list:
@@ -22,6 +24,7 @@ packages:
 
 write_files:
   - content: |
+      #!/bin/bash
       echo "Hello World"
     owner: root:root
     permissions: '0755'
