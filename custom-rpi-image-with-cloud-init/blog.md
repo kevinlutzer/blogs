@@ -58,7 +58,7 @@ Note that the tag `#cloud-init` is needed at the top of the file for it to be a 
 
 ### Apt Packages
 
-Lets add PPA `apt` source for docker as well as install some packages. Append the following code snippet to the
+Lets add package repository source for docker as well as install some packages. Append the following code snippet to the
  `user-data` file.
 
 ``` yaml
@@ -67,6 +67,9 @@ apt:
     docker.list:
       source: deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable # Where apt can find docker
       keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88 # The ID of the GPG key docker uses
+
+package_update: true
+package_upgrade: true
 
 packages:
   - docker-ce
