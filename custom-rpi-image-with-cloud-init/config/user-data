@@ -2,13 +2,15 @@
 users:
   - default # This is the default ubuntu user
   - name: work
-    groups: users,disk,dialout # dialout and disk give the work user access to storage and any connected serial terminals. 
+    shell: /bin/bash # The shell the user will log into
+    groups: users,disk,dialout # dialout and disk give the work user access to storage and any connected serial devices. 
     plain_text_passwd: newpassword # this will be the password for the user you would login with ssh
-    sudo: ALL=(ALL) NOPASSWD:ALL # similar to how the default user is
+    lock_passwd: false # unlock password to be able to lock into user via SSH
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"] # all unrestricted sudo access
     ssh_import_id:
       - gh:kevinlutzer # change this to be your Github user, it will add your public Github key so you can SSH into the Raspberry Pi with the same Github private key
 
-ssh_pwauth: true # needed to remotely access the RPi with SSH by password
+ssh_pwauth: true # needed to remotely access the RPi with SSH by password, this is an sshd config
 
 apt:
   sources:
