@@ -1,0 +1,16 @@
+<mxfile host="app.diagrams.net" modified="2025-04-17T03:33:22.468Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:136.0) Gecko/20100101 Firefox/136.0" etag="GsVb6ginmxR_lr2DNGxH" version="24.5.2" type="github">
+  <diagram name="Page-1" id="6T9-zfBwMkrX8fDOKYGP">
+    <mxGraphModel dx="3108" dy="1202" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="#000000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hXK2onWsL5QXYiTovX8B-5" value="m" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Raspberry_Pi_Logo.svg/1280px-Raspberry_Pi_Logo.svg.png;" vertex="1" parent="1">
+          <mxGeometry x="-780" y="40" width="237.88" height="304" as="geometry" />
+        </mxCell>
+        <mxCell id="hXK2onWsL5QXYiTovX8B-8" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://14518100.fs1.hubspotusercontent-na1.net/hub/14518100/hubfs/Imported_Blog_Media/image3-10.png?width=292&amp;height=292&amp;name=image3-10.png;" vertex="1" parent="1">
+          <mxGeometry x="-470" y="46" width="292" height="292" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
